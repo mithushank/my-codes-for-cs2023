@@ -1,0 +1,80 @@
+#include <iostream>
+using namespace std;
+
+const int MAX_SIZE=100;
+
+class Stack {
+  private:
+    int arr[MAX_SIZE];
+    int top;
+
+  public:
+    Stack() {
+        top = -1;
+    }
+
+    void push(int value) {
+        if (top == MAX_SIZE - 1) {
+            cout << "Stack is already full." << endl;
+            return;
+        }
+        top++;
+        arr[top] = value;
+    }
+
+    int pop() {
+        if (top == -1) {
+            cout << "Stack is empty." << endl;
+            return -1;
+        }
+        int popped = arr[top];
+        top--;
+        return popped;
+    }
+
+    int StackTop() {
+        if (top == -1) {
+            cout << "Stack is Empty" << endl;
+            return -1;
+        }
+        return arr[top];
+    }
+    
+    void Display(){
+        if (top == -1) {
+            cout << "Stack is Empty" << endl;
+            return;
+        }   
+        cout << "These Are The elements in Stack: ";
+        for (int i = top; i >= 0; i--) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;        
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+    
+    bool isFull(){
+        return top == MAX_SIZE;
+    }
+    
+};
+
+int main() {
+    Stack s;
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.push(45);
+    s.push(50);
+    s.push(100);
+    s.Display();
+    cout << s.pop() << endl;
+    cout << s.StackTop() << endl;
+    cout << s.isEmpty() << endl;
+    cout << s.isFull() << endl;
+    s.Display();
+    return 0;
+}
