@@ -1,0 +1,98 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+
+using namespace std;
+
+// Structure to represent an edge in the graph
+struct Edge {
+    int source;
+    int destination;
+    int weight;
+
+    Edge(int src, int dest, int w) : source(src), destination(dest), weight(w) {}
+};
+
+// Function to find the MST using Prim's algorithm
+void primMST(vector<vector<Edge>>& graph, int startVertex) {
+    int numVertices = graph.size();
+
+    // Create a priority queue to store the edges based on their weights
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+    // Create a vector to store the minimum weight for each vertex
+    vector<int> minWeight(numVertices, INT_MAX);
+
+    // Create a vector to store the parent vertex for each vertex in the MST
+    vector<int> parent(numVertices, -1);
+
+    // Create a vector to track whether a vertex has been included in the MST
+    vector<bool> visited(numVertices, false);
+
+    // Start with the given start vertex
+    minWeight[startVertex] = 0;
+    pq.push(make_pair(0, startVertex));
+
+    while (!pq.empty()) {
+        // Extract the vertex with the minimum weight from the priority queue
+        int u = pq.top().second;
+        pq.pop();
+
+        // Mark the vertex as visited
+        visited[u] = true;
+
+        // Traverse all the adjacent vertices of u
+        for (const auto& edge : graph[u]) {
+            int v = edge.destination;
+            int weight = edge.weight;
+
+            // If v has not been visited and the weight is smaller than the minimum weight of v
+            if (!visited[v] && weight < minWeight[v]) {
+                // Update the minimum weight of v and add the edge to the priority queue
+                minWeight[v] = weight;
+                pq.push(make_pair(minWeight[v], v));
+                parent[v] = u;
+            }
+        }
+    }
+
+    // Print the edges of the MST
+    cout << "Minimum Spanning Tree Edges:" << endl;
+    int count=0;
+    for (int i = 1; i < numVertices; i++) {
+        cout << "Edge: " << parent[i] << " - " << i << ", Weight: " << minWeight[i] << endl;
+        count+= minWeight[i];
+    }
+    cout << "Total length of the path is " << count <<endl;
+}
+
+int main() {
+    int numVertices, numEdges;
+    cout << "Enter the number of vertices: ";
+    cin >> numVertices;
+    cout << "Enter the number of edges: ";
+    cin >> numEdges;
+
+    // Create the graph as an adjacency list
+    vector<vector<Edge>> graph(numVertices);
+
+    cout << "Enter the edges in the format (source, destination, weight):" << endl;
+    for (int i = 0; i < numEdges; i++) {
+        int source, destination, weight;
+        cin >> source >> destination >> weight;
+
+        // Add edges in both directions since the graph is undirected
+        graph[source].push_back(Edge(source, destination, weight));
+        graph[destination].push_back(Edge(destination, source, weight));
+    }
+
+    int startVertex;
+    cout << "Enter the starting vertex: ";
+    cin >> startVertex;
+
+    // Find the Minimum Spanning Tree using Prim's algorithm
+    primMST(graph, startVertex);
+
+    return 0;
+}
